@@ -1,16 +1,25 @@
 <script>
 
+export let state;
+
 </script>
 
-<div id="completion-indicator">
+<div id="completion-indicator" class="completion-indicator {state  || 'pending'}">
 
 </div>
 
 <style>
-    #completion-indicator {
+    .completion-indicator {
         height: 40vh;
         width: 100%;
-        background-color: rgba(48, 116, 255, 0.72);
         border-radius: 1rem;
+    }
+
+    .pending {
+        background-color: #f6f6f6;
+    }
+
+    .running {
+        background-color: rgba(48, 116, 255, 0.72);
     }
 </style>

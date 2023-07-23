@@ -17,13 +17,13 @@
 <section id="content">
     <Title title="POMODORO"/>
 
-    <div id="pomodoro-buttons">
+    <div class="pomodoro-buttons">
         {#each timerButtons as timer}
             <Buzzer on:click={() => buzzerClicked(timer)} {timer}></Buzzer>
         {/each}
     </div>
 
-    <CompletionIndicator></CompletionIndicator>
+        <CompletionIndicator state="running"></CompletionIndicator>
 </section>
 
 <style>
@@ -33,11 +33,11 @@
         flex-direction: column;
         gap: 1rem;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         width: 50vw;
     }
 
-    #pomodoro-buttons {
+    .pomodoro-buttons {
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -45,4 +45,10 @@
         justify-content: space-evenly;
 
     }
+
+    .completion-indicator {
+        /*justify-content: flex-end;*/
+    }
+
+
 </style>
