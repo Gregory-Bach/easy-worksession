@@ -1,21 +1,37 @@
 <script>
     import Title from "../title.component.svelte";
+    import Buzzer from "./buzzer.component.svelte";
+    import CompletionIndicator from "./completion-indicator.component.svelte";
+
+    let timerButtons = [
+        {label: "15"},
+        {label: "25"},
+        {label: "55"},
+    ]
+
+    function buzzerClicked(timer) {
+        console.log("buzzer clicked", timer);
+    }
 </script>
 
 <section id="content">
     <Title title="POMODORO"/>
 
     <div id="pomodoro-buttons">
-        <div>Hello</div>
-        <div>Greg</div>
-        <div>!</div>
+        {#each timerButtons as timer}
+            <Buzzer on:click={() => buzzerClicked(timer)} {timer}></Buzzer>
+        {/each}
     </div>
+
+    <CompletionIndicator></CompletionIndicator>
 </section>
 
 <style>
     #content {
+        padding: 1rem;
         display: flex;
         flex-direction: column;
+        gap: 1rem;
         align-items: center;
         justify-content: flex-start;
         width: 50vw;

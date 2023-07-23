@@ -4,8 +4,6 @@
     import Timesheet from './components/timesheet.component.svelte';
 </script>
 
-<Title/>
-
 <section id="content">
     <Timesheet/>
     <Pomodoro/>
@@ -13,6 +11,7 @@
 
 <style>
     #content {
+        height: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
