@@ -2,6 +2,7 @@
     import Title from "../title.component.svelte";
     import Buzzer from "./buzzer.component.svelte";
     import CompletionIndicator from "./completion-indicator.component.svelte";
+    import Actions from "./pomodoro-fast-actions.svelte";
 
     let timerButtons = [
         {label: "15"},
@@ -22,6 +23,8 @@
             <Buzzer on:click={() => buzzerClicked(timer)} {timer}></Buzzer>
         {/each}
     </div>
+
+    <Actions></Actions>
 
         <CompletionIndicator state="running"></CompletionIndicator>
 </section>
