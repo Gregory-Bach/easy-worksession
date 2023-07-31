@@ -1,7 +1,7 @@
 <script>
     import Title from './components/title.component.svelte';
     import Pomodoro from './components/pomodoro/pomodoro.component.svelte';
-    import Timesheet from './components/timesheet.component.svelte';
+    import Timesheet from './components/timesheet/timesheet.component.svelte';
 </script>
 
 <section id="content">
