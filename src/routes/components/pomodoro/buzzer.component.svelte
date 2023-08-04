@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     export let timer;
 </script>
 
@@ -15,6 +15,7 @@
         justify-content: center;
         align-items: center;
         background-color: aquamarine;
+        font-size: clamp(0.5rem, 2vw, 4rem);
         cursor: pointer;
     }
 </style>
