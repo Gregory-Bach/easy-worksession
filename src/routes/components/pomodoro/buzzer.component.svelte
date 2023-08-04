@@ -2,9 +2,7 @@
     export let timer;
 </script>
 
-
-
-<div class="buzzer" on:click role="button">{timer.label}</div>
+<div class="buzzer" on:click role="button">{timer.label?.toUpperCase()}</div>
 
 <style>
     .buzzer {
@@ -14,8 +12,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: aquamarine;
+        background-color: #6ed9b5;
+        color: white;
         font-size: clamp(0.5rem, 2vw, 4rem);
+        font-family: "Arial Black", monospace;
         cursor: pointer;
     }
 </style>

@@ -10,12 +10,11 @@
     let state = "pending";
 
     pomodoroStatus.subscribe((status) => {
-        console.log("status", status);
         state = status;
     });
 
     pomodoroTimeToGo.subscribe((time) => {
-        if (time === 0) {
+        if (time < 1) {
             clearInterval(interval);
             interval = null;
             pomodoroStatus.set('pending');
@@ -26,28 +25,23 @@
         }
     });
 
-    let timerButtons = [
-        {label: "15"},
-        {label: "25"},
-        {label: "55"},
+    const timerButtons = [
+        {label: "Fast", duration: 15},
+        {label: "Classic", duration: 25},
+        {label: "Deep", duration: 55},
     ]
 
-    function buzzerClicked(timer) {
+    function buzzerClicked(timer: { label: string, duration: number }) {
         if (!interval) {
-            pomodoroTimeToGo.set((parseInt(timer.label) + 5) * 60);
-            interval = setInterval(() => {
-                pomodoroTimeToGo.update((value) => {
-                    return value - 1;
-                });
-            }, 1000);
+            pomodoroTimeToGo.set((timer.duration + 5) * 60);
+            interval = setInterval(() =>
+                pomodoroTimeToGo.update((value) => value - 1), 1000);
             pomodoroStatus.set("running");
         }
     }
 
-    function actionClicked(action: string) {
-        if (!interval) {
-            return;
-        }
+    function actionClicked(action: 'pause' | 'stop') {
+        if (!interval) return;
 
         switch (action) {
             case "pause":
@@ -56,6 +50,8 @@
             case "stop":
                 stop();
                 break;
+            default:
+                console.error("Unknown action", action);
         }
     }
 
