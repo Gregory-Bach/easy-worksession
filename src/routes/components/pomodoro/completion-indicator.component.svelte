@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 
-export let state;
+export let state: string;
 
 </script>
 
@@ -21,5 +21,13 @@ export let state;
 
     .running {
         background-color: rgba(48, 116, 255, 0.72);
+    }
+
+    .ending {
+        background-color: orange;
+    }
+
+    .resting {
+        background-color: palegreen;
     }
 </style>
