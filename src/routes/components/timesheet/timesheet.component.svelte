@@ -1,80 +1,58 @@
 <script lang="ts">
     import Title from '../title.component.svelte';
     import Action from "../shared/fast-action.svelte";
+    import {timesheetEllapsedTime} from "../../../stores/store";
 
-    function actionClicked(action: string) {
-        console.log("action clicked", action);
-    }
 
     // const timerDisplay = document.getElementById('timerDisplay');
     // const workSessionList = document.getElementById('workSessionList');
     // const workSessionName = document.getElementById('workSessionName');
 
     let timer = 0;
-    let timerInterval = null;
-    const workSessions = [];
-    let currentWorkSession = null;
+    let interval = null;
+    let workSessions: any[] = [];
+    let currentWorkSessionName!: string;
 
-    // function start(timerDisplay: any, workSessions: any[], timer: number, timerInterval: any, workSessionName: any) {
-    //
-    //     try {
-    //         timerDisplay.innerHTML = 'CLICK START';
-    //
-    //
-    //         document.getElementById('startButton').addEventListener('click', () => {
-    //             if (timerInterval) {
-    //                 return;
-    //             }
-    //
-    //             startTimer();
-    //             workSessionList.innerHTML = getLIElementsForWorkSessions(workSessions);
-    //         });
-    //
-    //         document.getElementById('endButton').addEventListener('click', function () {
-    //             endTimer();
-    //             workSessionList.innerHTML = getLIElementsForWorkSessions(workSessions);
-    //         });
-    //     } catch (e) {
-    //         console.log('timerDisplay not found');
-    //     }
-    // }
+    function start() {
+        startWorksession(timerDisplay, workSessions, timer, workSessionName);
+    }
 
-    function startTimer(workSessions: any[], timer: number, timerDisplay: any, timerInterval: any, workSessionName: any) {
-        workSessions.push({
+    function stop() {
+        console.error('STOP action is not implemented yet');
+        endTimer();
+    }
+
+    function startWorksession(timerDisplay: any, workSessions: any[], timerInterval: any, workSessionName: any) {
+
+        if (timerInterval) {
+            return;
+        }
+
+        startTimer();
+    }
+
+    function startTimer() {
+        workSessions = [...workSessions, {
             start: new Date(),
             end: null,
-            label: workSessionName.value ? workSessionName.value : 'Work Session',
-        });
+            label: currentWorkSessionName ? currentWorkSessionName : 'Work Session',
+        }];
 
-        workSessionName.value = null;
+        currentWorkSessionName = '';
 
-        timerInterval = setInterval(function () {
-            timer++;
-            timerDisplay.innerHTML = timer.toString();
+        interval = setInterval(() => {
+            timesheetEllapsedTime.update(n => n + 1);
         }, 1000);
 
-        console.log('START was clicked');
-        return {
-            workSessions,
-            timer,
-            timerDisplay,
-            timerInterval,
-            workSessionName,
-        };
+        console.debug('START was clicked', workSessions);
     }
 
 
-    function endTimer(workSessions: any[], timer: number, timerDisplay: any, timerInterval: any) {
+    function endTimer() {
         workSessions[workSessions.length - 1].end = new Date();
-        clearInterval(timerInterval);
-        timerInterval = null;
+        clearInterval(interval);
+        interval = null;
         console.log('END was clicked', workSessions);
-        return {
-            workSessions,
-            timer,
-            timerDisplay,
-            timerInterval,
-        };
     }
 
     function getLIElementsForWorkSessions(_workSessions: any[]) {
@@ -99,17 +77,23 @@
 
     <div>
         <section class="actions">
-            <Action action="start" on:click={() => actionClicked('start')}></Action>
-            <Action action="stop" on:click={() => actionClicked('stop')}></Action>
+            <Action action="start" on:click={start}></Action>
+            <Action action="stop" on:click={stop}></Action>
         </section>
 
 
-        <input id="workSessionName" aria-label=""/>
+        <input id="workSessionName" aria-label="Enter your worksession name here" bind:value={currentWorkSessionName}/>
 
-        <div id="timerDisplay"></div>
+        <div id="timerDisplay">{Math.floor($timesheetEllapsedTime / 60)} min {$timesheetEllapsedTime % 60 || 0 } sec
+        </div>
 
         <section>
-            <ul id="workSessionList"></ul>
+            <ul id="workSessionList">
+                {#each [...workSessions].reverse() as workSession}
+                    <li>{workSession.label} - {formatDateToHoursAndMinutes(workSession.start)}
+                        - {formatDateToHoursAndMinutes(workSession.end)}</li>
+                {/each}
+            </ul>
         </section>
 
     </div>
