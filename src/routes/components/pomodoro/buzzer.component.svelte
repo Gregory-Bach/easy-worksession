@@ -6,8 +6,8 @@
 
 <style>
     .buzzer {
-        width: 15vw;
-        height: 15vw;
+        width: 13vw;
+        height: 13vw;
         border-radius: 50%;
         display: flex;
         justify-content: center;

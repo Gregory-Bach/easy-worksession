@@ -4,15 +4,28 @@
 </script>
 
 <section id="content">
-    <Timesheet/>
-    <Pomodoro/>
+    <div class="timesheet">
+        <Timesheet/>
+    </div>
+    <div class="pomodoro">
+        <Pomodoro/>
+    </div>
 </section>
 
 <style>
     #content {
         height: 100%;
+        width: 100vw;
         display: flex;
         flex-direction: row;
-        justify-content: space-evenly;
+        justify-content: space-around;
+    }
+
+    .timesheet {
+        width: 45vw;
+    }
+
+    .pomodoro {
+        width: 45vw;
     }
 </style>

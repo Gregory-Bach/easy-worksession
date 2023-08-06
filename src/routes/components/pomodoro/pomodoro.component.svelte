@@ -70,7 +70,7 @@
 <section id="content">
     <Title title="POMODORO"/>
 
-    <div class="pomodoro-buttons">
+    <div class="buzzers">
         {#each timerButtons as timer}
             <Buzzer on:click={() => buzzerClicked(timer)} {timer}></Buzzer>
         {/each}
@@ -86,21 +86,22 @@
 
 <style>
     #content {
+        width: 100%;
         padding: 1rem;
         display: flex;
         flex-direction: column;
         gap: 1rem;
         align-items: center;
         justify-content: space-between;
-        width: 50vw;
     }
 
-    .pomodoro-buttons {
+    .buzzers {
         width: 100%;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-evenly;
+        gap: 1rem;
 
     }
 
