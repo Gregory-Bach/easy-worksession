@@ -1,135 +1,102 @@
 <script lang="ts">
     import Title from '../title.component.svelte';
     import Action from "../shared/fast-action.svelte";
-
-    function actionClicked(action: string) {
-        console.log("action clicked", action);
-    }
-
-    // const timerDisplay = document.getElementById('timerDisplay');
-    // const workSessionList = document.getElementById('workSessionList');
-    // const workSessionName = document.getElementById('workSessionName');
+    import TimerDisplay from "./timer-display.component.svelte";
+    import {timesheetEllapsedTime} from "../../../stores/store";
 
     let timer = 0;
-    let timerInterval = null;
-    const workSessions = [];
-    let currentWorkSession = null;
+    let interval = null;
+    let workSessions: any[] = [];
+    let currentWorkSessionName!: string;
 
-    // function start(timerDisplay: any, workSessions: any[], timer: number, timerInterval: any, workSessionName: any) {
-    //
-    //     try {
-    //         timerDisplay.innerHTML = 'CLICK START';
-    //
-    //
-    //         document.getElementById('startButton').addEventListener('click', () => {
-    //             if (timerInterval) {
-    //                 return;
-    //             }
-    //
-    //             startTimer();
-    //             workSessionList.innerHTML = getLIElementsForWorkSessions(workSessions);
-    //         });
-    //
-    //         document.getElementById('endButton').addEventListener('click', function () {
-    //             endTimer();
-    //             workSessionList.innerHTML = getLIElementsForWorkSessions(workSessions);
-    //         });
-    //     } catch (e) {
-    //         console.log('timerDisplay not found');
-    //     }
-    // }
 
-    function startTimer(workSessions: any[], timer: number, timerDisplay: any, timerInterval: any, workSessionName: any) {
-        workSessions.push({
+    function stop() {
+        endTimer();
+    }
+
+    function start() {
+
+        if (interval) {
+            endTimer();
+        }
+
+        startTimer();
+    }
+
+    function startTimer() {
+        workSessions = [...workSessions, {
             start: new Date(),
             end: null,
-            label: workSessionName.value ? workSessionName.value : 'Work Session',
-        });
+            label: currentWorkSessionName ? currentWorkSessionName : 'Work Session',
+        }];
 
-        workSessionName.value = null;
+        currentWorkSessionName = '';
 
-        timerInterval = setInterval(function () {
-            timer++;
-            timerDisplay.innerHTML = timer.toString();
+        interval = setInterval(() => {
+            timesheetEllapsedTime.update(n => n + 1);
         }, 1000);
+    }
 
-        console.log('START was clicked');
-        return {
-            workSessions,
-            timer,
-            timerDisplay,
-            timerInterval,
-            workSessionName,
-        };
+    function startFromExisting(label: string) {
+        currentWorkSessionName = label;
+        start();
     }
 
 
-    function endTimer(workSessions: any[], timer: number, timerDisplay: any, timerInterval: any) {
+    function endTimer() {
         workSessions[workSessions.length - 1].end = new Date();
-        clearInterval(timerInterval);
-        timerInterval = null;
+        clearInterval(interval);
+        interval = null;
+        timesheetEllapsedTime.set(0);
         console.log('END was clicked', workSessions);
-        return {
-            workSessions,
-            timer,
-            timerDisplay,
-            timerInterval,
-        };
-    }
-
-    function getLIElementsForWorkSessions(_workSessions: any[]) {
-        const reversedWorkSessions = [..._workSessions].reverse();
-        return reversedWorkSessions.map(function (workSession) {
-            return `<li>${workSession.label} - ${formatDateToHoursAndMinutes(workSession.start)} - ${formatDateToHoursAndMinutes(workSession.end)}</li>`;
-        }).join('');
     }
 
     function formatDateToHoursAndMinutes(date: Date) {
         if (!date) {
             return '⏱️';
         }
-
         return `${date.getHours()}:${date.getMinutes()}`;
     }
-
 </script>
 
-<section id="content">
-    <Title title="TIMESHEET"/>
+<Title title="TIMESHEET"/>
 
-    <div>
-        <section class="actions">
-            <Action action="start" on:click={() => actionClicked('start')}></Action>
-            <Action action="stop" on:click={() => actionClicked('stop')}></Action>
-        </section>
+<div class="content">
+    <section class="actions">
+        <Action action="start" on:click={start}></Action>
+        <Action action="stop" on:click={stop}></Action>
+    </section>
 
+    <form on:submit|preventDefault={start}>
+        <input id="workSessionName" aria-label="Enter your worksession name here" bind:value={currentWorkSessionName}/>
+    </form>
 
-        <input id="workSessionName" aria-label=""/>
+    <section>
+        <TimerDisplay/>
+    </section>
 
-        <div id="timerDisplay"></div>
+    <section class="worksession-list">
+        {#each [...workSessions].reverse() as workSession}
 
-        <section>
-            <ul id="workSessionList"></ul>
-        </section>
+            <div>
+                <button on:click={() => startFromExisting(workSession.label)}>{workSession.label}
+                    - {formatDateToHoursAndMinutes(workSession.start)}
+                    - {formatDateToHoursAndMinutes(workSession.end)}</button>
+            </div>
 
-    </div>
-</section>
+        {/each}
+    </section>
+</div>
 
 <style>
-    #content {
-        width: 50vw;
+    .content {
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
         height: 100%;
         gap: 16px;
-    }
-
-    #timerDisplay {
-        font-size: 48px;
-        font-weight: bold;
-        margin: 8px;
     }
 
     .actions {
@@ -142,12 +109,28 @@
         padding: 8px;
     }
 
+    form {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
     input {
         margin: 1rem 15%;
         width: 70%;
         padding: 8px;
         border-radius: 8px;
         border: 1px solid #ccc;
+    }
+
+    .worksession-list {
+        color: #838383;
+        font-size: 1.2rem;
+        display: flex;
+        gap: 0.25rem;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
     }
 
 </style>

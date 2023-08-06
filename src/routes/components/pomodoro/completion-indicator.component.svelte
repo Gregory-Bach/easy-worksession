@@ -11,8 +11,9 @@ export let state: string;
 <style>
     .completion-indicator {
         height: 40vh;
-        width: 100%;
+        width: 90%;
         border-radius: 1rem;
+        padding: 1rem;
     }
 
     .pending {
