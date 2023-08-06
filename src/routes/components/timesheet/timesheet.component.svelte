@@ -79,7 +79,9 @@
         {#each [...workSessions].reverse() as workSession}
 
             <div>
-                <button on:click={() => startFromExisting(workSession.label)}>{workSession.label}
+                <button on:click={() => startFromExisting(workSession.label)}
+                        class:active={!workSession.end}
+                >{workSession.label}
                     - {formatDateToHoursAndMinutes(workSession.start)}
                     - {formatDateToHoursAndMinutes(workSession.end)}</button>
             </div>
@@ -131,6 +133,69 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
+    }
+
+    button {
+        border: none;
+        background-color: transparent;
+        color: #838383;
+        font-size: 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .active {
+        background-color: #6ed9b5;
+        color: white;
+        -webkit-animation: breathing 7s ease-out infinite normal;
+    }
+
+    @-webkit-keyframes breathing {
+        0% {
+            -webkit-transform: scale(0.95);
+            transform: scale(0.95);
+        }
+
+        25% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+
+        60% {
+            -webkit-transform: scale(0.95);
+            transform: scale(0.95);
+        }
+
+        100% {
+            -webkit-transform: scale(0.95);
+            transform: scale(0.95);
+        }
+    }
+
+    @keyframes breathing {
+        0% {
+            -webkit-transform: scale(0.95);
+            -ms-transform: scale(0.95);
+            transform: scale(0.95);
+        }
+
+        25% {
+            -webkit-transform: scale(1);
+            -ms-transform: scale(1);
+            transform: scale(1);
+        }
+
+        60% {
+            -webkit-transform: scale(0.95);
+            -ms-transform: scale(0.95);
+            transform: scale(0.95);
+        }
+
+        100% {
+            -webkit-transform: scale(0.95);
+            -ms-transform: scale(0.95);
+            transform: scale(0.95);
+        }
     }
 
 </style>
