@@ -1,4 +1,5 @@
 <script lang="ts">
+    import * as dayjs from 'dayjs';
     import Title from '../title.component.svelte';
     import Action from "../shared/fast-action.svelte";
     import TimerDisplay from "./timer-display.component.svelte";
@@ -55,7 +56,7 @@
         if (!date) {
             return '⏱️';
         }
-        return `${date.getHours()}:${date.getMinutes()}`;
+        return dayjs(date).format('HH:mm');
     }
 </script>
 
@@ -82,8 +83,12 @@
                 <button on:click={() => startFromExisting(workSession.label)}
                         class:active={!workSession.end}
                 >{workSession.label}
-                    - {formatDateToHoursAndMinutes(workSession.start)}
-                    - {formatDateToHoursAndMinutes(workSession.end)}</button>
+                    | {formatDateToHoursAndMinutes(workSession.start)}
+                    => {formatDateToHoursAndMinutes(workSession.end)}
+                    {#if (workSession.end) }
+                        &nbsp;({dayjs(workSession.end).diff(workSession.start, 'm')} mn)
+                    {/if}
+                </button>
             </div>
 
         {/each}
