@@ -3,19 +3,21 @@
     import Title from '../title.component.svelte';
     import Action from "../shared/fast-action.svelte";
     import TimerDisplay from "./timer-display.component.svelte";
-    import {timesheetEllapsedTime} from "../../../stores/store";
+    import TimesheetSummary from "./timesheet-summary.component.svelte";
+    import TimesheetWorksessions from "./timesheet-worksessions.component.svelte";
+    import {timesheetEllapsedTime, launchNewWorkSession} from "../../../stores/store";
 
     let timer = 0;
     let interval = null;
     let workSessions: any[] = [];
-    let currentWorkSessionName!: string;
+    let currentWorkSessionName = '';
 
 
     function stop() {
         endTimer();
     }
 
-    function start() {
+    const start = () => {
 
         if (interval) {
             endTimer();
@@ -25,6 +27,7 @@
     }
 
     function startTimer() {
+
         workSessions = [...workSessions, {
             start: new Date(),
             end: null,
@@ -37,12 +40,6 @@
             timesheetEllapsedTime.update(n => n + 1);
         }, 1000);
     }
-
-    function startFromExisting(label: string) {
-        currentWorkSessionName = label;
-        start();
-    }
-
 
     function endTimer() {
         workSessions[workSessions.length - 1].end = new Date();
@@ -58,6 +55,14 @@
         }
         return dayjs(date).format('HH:mm');
     }
+
+
+    launchNewWorkSession.subscribe((value) => {
+        console.debug('launchNewWorkSession', value);
+        currentWorkSessionName = value;
+        // start();
+    });
+
 </script>
 
 <Title title="TIMESHEET"/>
@@ -76,23 +81,27 @@
         <TimerDisplay/>
     </section>
 
-    <section class="worksession-list">
-        {#each [...workSessions].reverse() as workSession}
+    <!--    <section class="worksession-list">-->
+    <!--        {#each [...workSessions].reverse() as workSession}-->
 
-            <div>
-                <button on:click={() => startFromExisting(workSession.label)}
-                        class:active={!workSession.end}
-                >{workSession.label}
-                    | {formatDateToHoursAndMinutes(workSession.start)}
-                    => {formatDateToHoursAndMinutes(workSession.end)}
-                    {#if (workSession.end) }
-                        &nbsp;({dayjs(workSession.end).diff(workSession.start, 'm')} mn)
-                    {/if}
-                </button>
-            </div>
+    <!--            <div>-->
+    <!--                <button on:click={() => startFromExisting(workSession.label)}-->
+    <!--                        class:active={!workSession.end}-->
+    <!--                >{workSession.label}-->
+    <!--                    | {formatDateToHoursAndMinutes(workSession.start)}-->
+    <!--                    => {formatDateToHoursAndMinutes(workSession.end)}-->
+    <!--                    {#if (workSession.end) }-->
+    <!--                        &nbsp;({dayjs(workSession.end).diff(workSession.start, 'm')} mn)-->
+    <!--                    {/if}-->
+    <!--                </button>-->
+    <!--            </div>-->
 
-        {/each}
-    </section>
+    <!--        {/each}-->
+    <!--    </section>-->
+
+    <TimesheetWorksessions {workSessions}/>
+
+    <TimesheetSummary {workSessions}/>
 </div>
 
 <style>
@@ -130,77 +139,23 @@
         border: 1px solid #ccc;
     }
 
-    .worksession-list {
-        color: #838383;
-        font-size: 1.2rem;
-        display: flex;
-        gap: 0.25rem;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-    }
+    /*.worksession-list {*/
+    /*    color: #838383;*/
+    /*    font-size: 1.2rem;*/
+    /*    display: flex;*/
+    /*    gap: 0.25rem;*/
+    /*    flex-direction: column;*/
+    /*    justify-content: flex-start;*/
+    /*    align-items: flex-start;*/
+    /*}*/
 
-    button {
-        border: none;
-        background-color: transparent;
-        color: #838383;
-        font-size: 1.2rem;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .active {
-        background-color: #6ed9b5;
-        color: white;
-        -webkit-animation: breathing 7s ease-out infinite normal;
-    }
-
-    @-webkit-keyframes breathing {
-        0% {
-            -webkit-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-
-        25% {
-            -webkit-transform: scale(1);
-            transform: scale(1);
-        }
-
-        60% {
-            -webkit-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-
-        100% {
-            -webkit-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-    }
-
-    @keyframes breathing {
-        0% {
-            -webkit-transform: scale(0.95);
-            -ms-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-
-        25% {
-            -webkit-transform: scale(1);
-            -ms-transform: scale(1);
-            transform: scale(1);
-        }
-
-        60% {
-            -webkit-transform: scale(0.95);
-            -ms-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-
-        100% {
-            -webkit-transform: scale(0.95);
-            -ms-transform: scale(0.95);
-            transform: scale(0.95);
-        }
-    }
+    /*button {*/
+    /*    border: none;*/
+    /*    background-color: transparent;*/
+    /*    color: #838383;*/
+    /*    font-size: 1.2rem;*/
+    /*    border-radius: 8px;*/
+    /*    cursor: pointer;*/
+    /*}*/
 
 </style>
