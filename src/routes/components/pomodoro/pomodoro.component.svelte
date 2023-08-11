@@ -26,7 +26,7 @@
     });
 
     const timerButtons = [
-        {label: "Fast", duration: 15},
+        {label: "Blitz", duration: 15},
         {label: "Classic", duration: 25},
         {label: "Deep", duration: 55},
     ]
@@ -114,6 +114,5 @@
         width: 100%;
         padding: 8px;
     }
-
 
 </style>
